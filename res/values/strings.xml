@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, EasyShareActivity!</string>
+    
     <string name="app_name">EasyShare</string>
+    <string name="no_service">Add a new service</string>
+    <string name="add_service">Add</string>
+    <string name="service_name">Name</string>
+    <string name="service_email">Email</string>
+    
 </resources>
