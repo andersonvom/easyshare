@@ -3,31 +3,59 @@ package net.andersonvom.easyshare;
 import android.app.ListActivity;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.SimpleCursorAdapter;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class EasyShareActivity extends ListActivity
 {
 	
 	private ServiceDbAdapter dbHelper;
 	public static final int MENU_ADD_ID = Menu.FIRST;
+	public static final int MENU_DEL_ID = Menu.FIRST+1;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
         dbHelper = new ServiceDbAdapter(this);
         dbHelper.open();
         fillServiceList();
+        
+        registerForContextMenu(getListView());
+    }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo)
+    {
+    	super.onCreateContextMenu(menu, view, menuInfo);
+    	menu.add(0, MENU_DEL_ID, 0, R.string.delete);
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
+    {
+    	switch(item.getItemId())
+    	{
+    		case MENU_DEL_ID:
+    			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+    			dbHelper.delete(info.id);
+    			fillServiceList();
+    			return true;
+    	}
+    	return super.onContextItemSelected(item);
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
     	boolean result = super.onCreateOptionsMenu(menu);
-    	menu.add(0, MENU_ADD_ID, 0, R.string.add_service);
+    	menu.add(0, MENU_ADD_ID, 0, R.string.add);
     	
     	return result;
     }

@@ -3,7 +3,8 @@
     
     <string name="app_name">EasyShare</string>
     <string name="no_services">Add a new service</string>
-    <string name="add_service">Add</string>
+    <string name="add">Add</string>
+    <string name="delete">Delete</string>
     <string name="service_name">Name</string>
     <string name="service_email">Email</string>
     

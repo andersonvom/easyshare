@@ -92,11 +92,16 @@ public class ServiceDbAdapter
 		
 		return db.insert(DATABASE_TABLE, null, row);
 	}
+
+	public boolean delete(long id)
+	{
+		return
+				(db.delete(DATABASE_TABLE, KEY_ID + "=" + id, null) > 0);
+	}
 	
 	public boolean delete(Service service)
 	{
-		return
-			(db.delete(DATABASE_TABLE, KEY_ID + "=" + service.getId(), null) > 0);
+		return delete(service.getId());
 	}
 	
     /**

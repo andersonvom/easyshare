@@ -2,7 +2,7 @@ package net.andersonvom.easyshare;
 
 public class Service
 {
-	private int id;
+	private long id;
 	private String name;
 	private String email;
 	
@@ -21,13 +21,13 @@ public class Service
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	/**
