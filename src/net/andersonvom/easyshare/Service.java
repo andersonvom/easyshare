@@ -1,13 +1,16 @@
 package net.andersonvom.easyshare;
 
+import android.os.Bundle;
+
 public class Service
 {
-	private long id;
+	private Long id;
 	private String name;
 	private String email;
 	
 	public Service()
 	{
+		this.id = 0L;
 		this.name  = "";
 		this.email = "";
 	}
@@ -18,17 +21,32 @@ public class Service
 		this.email = email;
 	}
 	
+	public boolean isValid()
+	{
+		return ( this.name != "" && this.email != "" );
+	}
+	
+	public Bundle toBundle()
+	{
+    	Bundle bundle = new Bundle();
+    	bundle.putString(ServiceDbAdapter.KEY_NAME,  getName());
+    	bundle.putString(ServiceDbAdapter.KEY_EMAIL, getEmail());
+    	bundle.putLong(ServiceDbAdapter.KEY_ID, getId());
+		
+    	return bundle;
+	}
+	
 	/**
 	 * @return the id
 	 */
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(long id) {
-		this.id = id;
+	public void setId(Long id) {
+		if (id != null) this.id = id;
 	}
 	/**
 	 * @return the name
@@ -40,7 +58,7 @@ public class Service
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
-		this.name = name;
+		if (name != null) this.name = name;
 	}
 	/**
 	 * @return the email
@@ -52,7 +70,7 @@ public class Service
 	 * @param email the email to set
 	 */
 	public void setEmail(String email) {
-		this.email = email;
+		if (email != null) this.email = email;
 	}
 	
 
