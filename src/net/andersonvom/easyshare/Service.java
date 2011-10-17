@@ -36,6 +36,21 @@ public class Service
     	return bundle;
 	}
 	
+	public static Service fromBundle(Bundle bundle)
+	{
+		Service service = null;
+		
+		if (bundle != null)
+		{
+			service = new Service();
+			service.setId( bundle.getLong(ServiceDbAdapter.KEY_ID) );
+			service.setName( bundle.getString(ServiceDbAdapter.KEY_NAME) );
+			service.setEmail( bundle.getString(ServiceDbAdapter.KEY_EMAIL) );
+		}
+		
+		return service;
+	}
+	
 	/**
 	 * @return the id
 	 */

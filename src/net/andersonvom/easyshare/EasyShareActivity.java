@@ -97,26 +97,26 @@ public class EasyShareActivity extends ListActivity
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent)
 	{
-		super.onActivityResult(requestCode, resultCode, data);
-		Bundle extras = data.getExtras();
+		super.onActivityResult(requestCode, resultCode, intent);
 		
-		Service service = new Service();
-		service.setId( extras.getLong(ServiceDbAdapter.KEY_ID) );
-		service.setName( extras.getString(ServiceDbAdapter.KEY_NAME) );
-		service.setEmail( extras.getString(ServiceDbAdapter.KEY_EMAIL) );
-		
-		switch (requestCode)
+		Bundle extras = intent.getExtras();
+		Service service = Service.fromBundle(extras);
+
+		if (service != null)
 		{
-			case ACTIVITY_CREATE:
-				dbHelper.create(service);
-				break;
-			case ACTIVITY_EDIT:
-				if (service.getId() != 0) dbHelper.update(service);
-				break;
+			switch (requestCode)
+			{
+				case ACTIVITY_CREATE:
+					dbHelper.create(service);
+					break;
+				case ACTIVITY_EDIT:
+					if (service.getId() != 0) dbHelper.update(service);
+					break;
+			}
+			fillServiceList();
 		}
-		fillServiceList();
 	}
 
 	private void createService()
