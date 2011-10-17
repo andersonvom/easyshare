@@ -100,6 +100,7 @@ public class EasyShareActivity extends ListActivity
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent)
 	{
 		super.onActivityResult(requestCode, resultCode, intent);
+		if (intent == null) return;
 		
 		Bundle extras = intent.getExtras();
 		Service service = Service.fromBundle(extras);
