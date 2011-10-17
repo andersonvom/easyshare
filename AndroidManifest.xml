@@ -21,6 +21,7 @@
                 <data android:mimeType="text/*" />
             </intent-filter>
         </activity>
+        <activity android:name=".ServiceEdit" />
 
     </application>
 </manifest>
