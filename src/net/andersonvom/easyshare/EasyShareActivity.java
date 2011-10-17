@@ -1,21 +1,28 @@
 package net.andersonvom.easyshare;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.SimpleCursorAdapter;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 public class EasyShareActivity extends ListActivity
 {
 	
 	private ServiceDbAdapter dbHelper;
-	public static final int MENU_ADD_ID = Menu.FIRST;
-	public static final int MENU_DEL_ID = Menu.FIRST+1;
+	private Cursor servicesCursor;
+	
+	private static final int MENU_ADD_ID = Menu.FIRST;
+	private static final int MENU_DEL_ID = Menu.FIRST+1;
+	
+	private static final int ACTIVITY_CREATE = 0;
+	private static final int ACTIVITY_EDIT   = 1;
 	
     /** Called when the activity is first created. */
     @Override
@@ -73,25 +80,61 @@ public class EasyShareActivity extends ListActivity
     	return super.onOptionsItemSelected(item);
     }
     
-    private void createService()
+	@Override
+	protected void onListItemClick(ListView list, View view, int position, long id)
+	{
+		super.onListItemClick(list, view, position, id);
+		
+		Cursor c = servicesCursor;		// This is only for optimization purposes, since accessing a local
+		c.moveToPosition(position);		// variable is much faster than accessing a field in Dalvik
+		
+		Intent editIntent = new Intent(this, ServiceEdit.class);
+		editIntent.putExtra(ServiceDbAdapter.KEY_ID,    id);
+		editIntent.putExtra(ServiceDbAdapter.KEY_NAME,  c.getString(c.getColumnIndexOrThrow(ServiceDbAdapter.KEY_NAME)));
+		editIntent.putExtra(ServiceDbAdapter.KEY_EMAIL, c.getString(c.getColumnIndexOrThrow(ServiceDbAdapter.KEY_EMAIL)));
+		
+		startActivityForResult(editIntent, ACTIVITY_EDIT);		
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		Bundle extras = data.getExtras();
+		
+		Service service = new Service();
+		service.setId( extras.getLong(ServiceDbAdapter.KEY_ID) );
+		service.setName( extras.getString(ServiceDbAdapter.KEY_NAME) );
+		service.setEmail( extras.getString(ServiceDbAdapter.KEY_EMAIL) );
+		
+		switch (requestCode)
+		{
+			case ACTIVITY_CREATE:
+				dbHelper.create(service);
+				break;
+			case ACTIVITY_EDIT:
+				if (service.getId() != 0) dbHelper.update(service);
+				break;
+		}
+		fillServiceList();
+	}
+
+	private void createService()
     {
-    	Service service = new Service();
-    	service.setName("Teste");
-    	service.setEmail("test@example.com");
-    	dbHelper.create(service);
-    	fillServiceList();
+    	Intent createIntent = new Intent(this, ServiceEdit.class);
+    	startActivityForResult(createIntent, ACTIVITY_CREATE);
     }
     
     private void fillServiceList()
     {
-    	Cursor cursor = dbHelper.fetch();
-    	startManagingCursor(cursor);
+    	servicesCursor = dbHelper.fetch();
+    	startManagingCursor(servicesCursor);
     	
-    	String[] from = new String[] { ServiceDbAdapter.KEY_NAME };
-    	int[] to = new int[] { android.R.id.text1 };
+    	String[] fieldNames = new String[] { ServiceDbAdapter.KEY_NAME };
+    	int[] resourceIds = new int[] { android.R.id.text1 };
     	
     	SimpleCursorAdapter services =
-    		new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, from, to);
+    		new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, servicesCursor, fieldNames, resourceIds);
     	setListAdapter(services);
     }
 }
